@@ -41,9 +41,3 @@ function  addblock(e){
 }
 
 removeThreads()
-
-
-window.addEventListener(
-'load',
-function() { },
-true);
