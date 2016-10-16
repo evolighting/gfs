@@ -3,36 +3,37 @@
 // @namespace   fishcan
 // @description nimingban threads block
 // @include     https://h.nimingban.com/*
-// @version     1.1
+// @version     1.2
 // @grant       GM_getValue
 // @grant       GM_setValue
 // ==/UserScript==
 
-var blist = []
-blist = GM_getValue('blist',[])
+var blist = [];
+blist = GM_getValue('blist',[]);
 
 /************************
 *截断超过长度的屏蔽列表
 *************************/ 
 if(blist.length>100){
-  blist=blist.slice(0,100)
+  blist=blist.slice(0,100);
 }
-
 var allThreads = document.getElementsByClassName("h-threads-item");
+
 for(var i = 0; i < allThreads.length; i++){
+  var thisId = allThreads[i].getAttribute("data-threads-id");
+  var thisNode = allThreads[i];
   var node = document.createElement("span");
   node.setAttribute("class","h-threads-info-report-btn");
-  var nodeA = document.createElement("a");
-  nodeA.setAttribute("id",allThreads[i].getAttribute("data-threads-id"));
-  var textnode = document.createTextNode("屏蔽");
-  var tp = document.createTextNode("[");
-  var ta = document.createTextNode("]");
-  nodeA.appendChild(textnode);
-  node.appendChild(tp);
-  node.appendChild(nodeA);
-  node.appendChild(ta);
-  allThreads[i].firstElementChild.firstElementChild.appendChild(node);
-  document.getElementById(allThreads[i].getAttribute("data-threads-id")).addEventListener('click', addblock, true);
+  node.innerHTML = "[<a>屏蔽串</a>]";
+  node.firstElementChild.setAttribute("id",thisId);
+  var now = thisNode.firstElementChild.firstElementChild
+  while(now != null){
+    if(now.className == "h-threads-info"){
+      now.appendChild(node);
+      break;
+    }else{now = now.nextElementSibling;}
+  }
+  document.getElementById(thisId).addEventListener('click', addBlock, true);
 }
 
 function removeThreads(){
@@ -60,7 +61,7 @@ function removeThreads(){
   GM_setValue('blist',blist)
 }
 
-function  addblock(e){
+function  addBlock(e){
   e.stopPropagation();
   var thisId=this.getAttribute("id");
   blist.push(thisId);
