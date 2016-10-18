@@ -3,7 +3,7 @@
 // @namespace   fishcan
 // @description hide sage threads
 // @include     https://h.nimingban.com/*
-// @version     1
+// @version     1.1
 // @grant       none
 // ==/UserScript==
 
@@ -17,6 +17,11 @@ var sageIcon = document.getElementsByClassName("uk-icon-thumbs-down");
 while(sageIcon.length > 0){
   var thisNode = sageIcon[0].parentNode.parentNode;
   var thisId = thisNode.getAttribute("data-threads-id");
+  if(thisId == null){
+    // 针对红名的标了sage的置顶串，其实其内部的结构和一般的sage并不一样
+    sageIcon[0].setAttribute("class","uk-icon-plus-square");
+    continue;
+  }
   var cNode = document.createElement("div");
   cNode.setAttribute("class","h-threads-item uk-clearfix");
   var node = document.createElement("span");
@@ -35,7 +40,6 @@ function toggleHideSage(e){
   var thisThreads = this.parentNode.parentNode
   e.stopPropagation();
   var index = sageIndex.indexOf(this.getAttribute("id"));
-  var node = document.createElement("span");
   if(thisThreads.firstElementChild.nextElementSibling == null){
     thisThreads.appendChild(sageThreads[index]);
   }else{
